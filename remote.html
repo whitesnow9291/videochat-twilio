@@ -1,0 +1,55 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Local Media</title>
+    <style>
+        html,body{
+            width: 100%;
+            height: 100%;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        #remote-media-div video{
+            width: 100%;
+            height: 100%;
+        }
+        </style>
+    <script src="https://media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
+    <script>
+        window.onload = function () {
+             var token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTS2U1OTFkYjNiZTI1YjE5MDMzMDdiMDY1MGIwOWVjNzA1LTE1MDEwOTM2ODkiLCJpc3MiOiJTS2U1OTFkYjNiZTI1YjE5MDMzMDdiMDY1MGIwOWVjNzA1Iiwic3ViIjoiQUMwYmRlNmNiY2NjYzY5OWY3ODc2MjYzOGQyYmVjNDMxOSIsImV4cCI6MTUwMTA5NzI4OSwiZ3JhbnRzIjp7ImlkZW50aXR5IjoiYWJjIiwidmlkZW8iOnt9fX0.HonsVhItd5FcJ5mWR7PmaAwxsCBACZpxLFL1VeqTWtc';
+             Twilio.Video.connect(token, {name: 'my-new-room'}).then(function (room) {
+                console.log('Successfully joined a Room: ', room);
+                room.on('participantConnected', function (participant) {
+                console.log("Participant '" + participant.identity + "' connected");
+                participant.on('trackAdded', track => {
+                    document.getElementById('remote-media-div').appendChild(track.attach());
+                    if (track.kind === 'audio') {
+                        console.log('Added an AudioTrack %s', track.id);
+                    } else {
+                        console.log('Added a VideoTrack %s', track.id);
+                    }
+                });
+                // participant.tracks.forEach(track => {
+                //     document.getElementById('remote-media-div').appendChild(track.attach());
+                // });
+            });
+            }, function (error) {
+                console.error('Unable to connect to Room: ' + error.message);
+            });
+            
+        }
+    </script>
+</head>
+
+<body>
+    <div id="remote-media-div"></div>
+    <div id="local"></div>
+</body>
+
+</html>
+           
